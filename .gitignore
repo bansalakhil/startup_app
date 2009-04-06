@@ -1,0 +1,7 @@
+log/*.log
+.project
+.aptana
+tmp/pid/*
+tmp/session/*
+tmp/cache/*
+
