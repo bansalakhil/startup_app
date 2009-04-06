@@ -1,3 +1,15 @@
 1) Modify database.yml
 2) rake db:migrate
 2) rake db:initialize	
+
+
+
+Note:
+1) There is a helper method 'back_or_default' which returns referer url if there was any refer otherwise returns default path(root_path). 
+   usecase: redirect_to back_or_default
+   
+2) There is a view helper method 'selected_class' which returns 'selected' if current_page matches with any of the argument passed otherwise returns ''
+   usecase: 
+    a) hash: <%= link_to "Home", {:controller => 'home', :action => 'index'}, :class => selected_class({:controller => 'home', :action => 'index'}) %>
+    b) array: <%= link_to "Profile", profile_user_path(current_user), :class => selected_class(["profile_user_path(current_user)", "edit_profile_user_path(current_user)"]) %>
+    c) string: <%= link_to "xxx", xxx_path, :class => selected_class('xxx_path') %>

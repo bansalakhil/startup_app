@@ -4,7 +4,23 @@
 class ApplicationController < ActionController::Base
   helper :all # include all helpers, all the time
   protect_from_forgery # See ActionController::RequestForgeryProtection for details
-
+  
   # Scrub sensitive parameters from your log
-  # filter_parameter_logging :password
+  filter_parameter_logging :password
+  
+  before_filter :current_user
+  
+  helper_method  :back_or_default
+  
+  
+  
+  def back_or_default
+    if request.env["HTTP_REFERER"]
+      return request.env["HTTP_REFERER"]
+    else
+      return root_path
+    end
+  end
+  
+  
 end
