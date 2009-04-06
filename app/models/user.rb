@@ -14,7 +14,7 @@ class User < ActiveRecord::Base
   def has_role?(role_in_question)
     @_list ||= self.roles.collect(&:name)
     return true if @_list.include?("swa")
-    (@_list.include?(role_in_question.to_s) )
+     (@_list.include?(role_in_question.to_s) )
   end
   # ---------------------------------------
   
@@ -24,23 +24,23 @@ class User < ActiveRecord::Base
   include Authentication
   include Authentication::ByPassword
   include Authentication::ByCookieToken
-
+  
   validates_format_of       :name,     :with => Authentication.name_regex,  :message => Authentication.bad_name_message, :allow_nil => true
   validates_length_of       :name,     :maximum => 100
-
+  
   validates_presence_of     :email
   validates_length_of       :email,    :within => 6..100 #r@a.wk
   validates_uniqueness_of   :email
   validates_format_of       :email,    :with => Authentication.email_regex, :message => Authentication.bad_email_message
-
+  
   before_create :make_activation_code 
-
+  
   # HACK HACK HACK -- how to do attr_accessible from here?
   # prevents a user from submitting a crafted form that bypasses activation
   # anything else you want your user to change should be added here.
   attr_accessible  :email, :name, :password, :password_confirmation
-
-
+  
+  
   # Activates the user in the database.
   def activate!
     @activated = true
@@ -48,17 +48,17 @@ class User < ActiveRecord::Base
     self.activation_code = nil
     save(false)
   end
-
+  
   # Returns true if the user has just been activated.
   def recently_activated?
     @activated
   end
-
+  
   def active?
     # the existence of an activation code means they have not activated yet
     activation_code.nil?
   end
-
+  
   # Authenticates a user by their login name and unencrypted password.  Returns the user or nil.
   #
   # uff.  this is really an authorization, not authentication routine.  
@@ -70,17 +70,39 @@ class User < ActiveRecord::Base
     u = find :first, :conditions => ['email = ? and activated_at IS NOT NULL', email] # need to get the salt
     u && u.authenticated?(password) ? u : nil
   end
-
-
+  
+  
   def email=(value)
     write_attribute :email, (value ? value.downcase : nil)
   end
-
-  protected
+  
+  
+  
+  # Clearout forgot password token
+  def reset_forgot_password_fields
+    self.forgot_password_token = nil
+    self.forgot_password_token_expires_at = nil
+    self.save
+  end
+  
+  # Generate tokens for forgot password
+  def generate_forgot_password_token
+    token = self.object_id.to_s + Time.now.to_i.to_s + rand.to_s
+    token = Digest::SHA1.hexdigest(token)
     
-    def make_activation_code
-        self.activation_code = self.class.make_token
-    end
-
-
+    self.forgot_password_token = token
+    self.forgot_password_token_expires_at = 24.hours.from_now
+    self.save
+  end
+  
+  
+  
+  
+  protected
+  
+  def make_activation_code
+    self.activation_code = self.class.make_token
+  end
+  
+  
 end

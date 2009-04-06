@@ -5,9 +5,14 @@ ActionController::Routing::Routes.draw do |map|
   map.signup '/signup', :controller => 'users', :action => 'new'
   map.activate '/activate/:activation_code', :controller => 'users', :action => 'activate', :activation_code => nil
   
-  map.resources :users
+  map.resources :users, :collection => {
+    :forgot_password => :any,  
+    :reset_password => :any,
+  }
   
   map.resource :session
+  
+  
   
   # The priority is based upon order of creation: first created -> highest priority.
   

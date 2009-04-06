@@ -2,12 +2,12 @@ class UsersController < ApplicationController
   # Be sure to include AuthenticationSystem in Application Controller instead
   include AuthenticatedSystem
   
-
+  
   # render new.rhtml
   def new
     @user = User.new
   end
- 
+  
   def create
     logout_keeping_session!
     @user = User.new(params[:user])
@@ -38,4 +38,73 @@ class UsersController < ApplicationController
       redirect_back_or_default('/')
     end
   end
+  
+  
+  # Forgot password functionality to make a reset password functionality
+  def forgot_password
+    @user = User.new if request.get?
+    
+    if request.post?
+        @user = User.find_by_email params[:user][:email]
+        if @user.nil?
+          @user = User.new
+          flash[:error] = "Could not find user with this email."
+        else
+          @user.generate_forgot_password_token
+          UserMailer.deliver_forgot_password_token(@user)
+          flash.now[:notice] = "We have sent you a mail at #{@user.email}, please follow the instructions in the mail."
+          @user = User.new
+        end
+    end
+  end 
+  
+
+  def reset_password
+    # redirect if no token found
+    check_for_forgot_token
+
+    @user = User.new
+    if request.post? and !params[:token].blank?
+      @user=User.find_by_forgot_password_token(params[:token])
+      
+      if  Time.now <= @user.forgot_password_token_expires_at
+        respond_to do |format|
+
+          if @user.update_attributes(params[:user])
+            flash[:notice] = 'Password was successfully updated.'
+            @user.reset_forgot_password_fields
+            format.html { redirect_to(login_path) }
+            format.xml { head :ok }
+          else
+            flash[:error] = 'could not change password'
+            format.html { render :action => "reset_password" }
+            format.xml { render :xml => @user.errors, :status => :unprocessable_entity }
+          end
+        end
+      else
+        flash[:error] = 'Your reset password url has been expired'
+        format.html { render :action => "reset_password" }
+        format.xml { render :xml => @user.errors, :status => :unprocessable_entity }
+      end
+    end
+  end  
+  
+  
+  
+  private 
+  
+  def check_for_forgot_token
+    if params[:token].blank?
+      flash[:error] = "Page you are looking does not exists"
+      redirect_to root_path and return
+    end
+    
+    @user = User.find_by_forgot_password_token(params[:token])
+    if @user.nil?
+      flash[:error] = "Invalid token"
+      redirect_to root_path and return
+    end
+
+  end
+
 end

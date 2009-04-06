@@ -13,6 +13,13 @@ class UserMailer < ActionMailer::Base
     @body[:url]  = "http://YOURSITE/"
   end
   
+  def forgot_password_token(user)
+    setup_email(user)    
+    subject    "Reset password request from #{SITE_NAME}"
+    body       :user => user
+  end  
+  
+  
   protected
     def setup_email(user)
       @recipients  = "#{user.email}"
