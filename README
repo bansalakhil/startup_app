@@ -4,6 +4,17 @@
 
 
 
+Following plugins are already installed:
+ 1) active-matchers
+ 2) annotate_models
+ 3) validates_as_email_address
+ 4) restful authentication
+ 5) role_requirement
+ 6) rspec
+ 7) rspec-rails
+ 8) will_paginate
+
+
 Note:
 1) There is a helper method 'back_or_default' which returns referer url if there was any refer otherwise returns default path(root_path). 
    usecase: redirect_to back_or_default

@@ -69,13 +69,13 @@ class UsersController < ApplicationController
       
       if  Time.now <= @user.forgot_password_token_expires_at
         respond_to do |format|
+          @user.validate_password = true
           if @user.update_attributes(params[:user])
             flash[:notice] = 'Password was successfully updated.'
             @user.reset_forgot_password_fields
             format.html { redirect_to(login_path) }
             format.xml { head :ok }
           else
-            flash[:error] = 'could not change password'
             format.html { render :action => "reset_password" }
             format.xml { render :xml => @user.errors, :status => :unprocessable_entity }
           end

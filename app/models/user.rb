@@ -77,7 +77,13 @@ class User < ActiveRecord::Base
     write_attribute :email, (value ? value.downcase : nil)
   end
   
+  def validate_password
+    @validate_password || false
+  end
   
+  def validate_password=(v)
+      @validate_password = v
+  end
   
   # Clearout forgot password token
   def reset_forgot_password_fields
