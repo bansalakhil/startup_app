@@ -1,4 +1,4 @@
-set :application, "sid"
+set :application, "APP_NAME"
 set :repository,  "GIT_REPO_PATH"
 
 set :deploy_to, "/var/www/#{application}"
