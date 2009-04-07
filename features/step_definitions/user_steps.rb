@@ -71,13 +71,13 @@ Then "$login should be logged in" do |login|
   controller.current_user.login.should == login
 end
 
-def named_user login
+def named_user email
   user_params = {
     'admin'   => {'id' => 1, 'login' => 'addie', 'password' => '1234addie', 'email' => 'admin@example.com',       },
     'oona'    => {          'login' => 'oona',   'password' => '1234oona',  'email' => 'unactivated@example.com'},
     'reggie'  => {          'login' => 'reggie', 'password' => 'monkey',    'email' => 'registered@example.com' },
     }
-  user_params[login.downcase]
+  user_params[email.downcase]
 end
 
 #
@@ -102,7 +102,7 @@ end
 def create_user(user_params={})
   @user_params       ||= user_params
   post "/users", :user => user_params
-  @user = User.find_by_login(user_params['login'])
+  @user = User.find_by_email(user_params['email'])
 end
 
 def create_user!(user_type, user_params)
@@ -119,7 +119,7 @@ def log_in_user user_params=nil
   @user_params ||= user_params
   user_params  ||= @user_params
   post "/session", user_params
-  @user = User.find_by_login(user_params['login'])
+  @user = User.find_by_email(user_params['email'])
   controller.current_user
 end
 

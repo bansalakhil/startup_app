@@ -21,10 +21,10 @@ describe UsersController do
     assigns(:user).reload
     assigns(:user).activation_code.should_not be_nil
   end
-  it 'requires login on signup' do
+  it 'requires email on signup' do
     lambda do
-      create_user(:login => nil)
-      assigns[:user].errors.on(:login).should_not be_nil
+      create_user(:email => nil)
+      assigns[:user].errors.on(:email).should_not be_nil
       response.should be_success
     end.should_not change(User, :count)
   end
@@ -55,12 +55,12 @@ describe UsersController do
   
   
   it 'activates user' do
-    User.authenticate('aaron', 'monkey').should be_nil
-    get :activate, :activation_code => users(:aaron).activation_code
+    User.authenticate(users(:inactive).email, 'monkey').should be_nil
+    get :activate, :activation_code => users(:inactive).activation_code
     response.should redirect_to('/login')
     flash[:notice].should_not be_nil
     flash[:error ].should     be_nil
-    User.authenticate('aaron', 'monkey').should == users(:aaron)
+    User.authenticate(users(:inactive).email, 'monkey').should == users(:inactive)
   end
   
   it 'does not activate user without key' do
@@ -109,13 +109,13 @@ describe UsersController do
       route_for(:controller => 'users', :action => 'edit', :id => '1').should == "/users/1/edit"
     end
     
-    it "should route users's 'update' action correctly" do
-      route_for(:controller => 'users', :action => 'update', :id => '1').should == "/users/1"
-    end
-    
-    it "should route users's 'destroy' action correctly" do
-      route_for(:controller => 'users', :action => 'destroy', :id => '1').should == "/users/1"
-    end
+#    it "should route users's 'update' action correctly" do
+#      route_for(:controller => 'users', :action => 'update', :id => '1').should == "/users/1"
+#    end
+#    
+#    it "should route users's 'destroy' action correctly" do
+#      route_for(:controller => 'users', :action => 'destroy', :id => '1').should == "/users/1"
+#    end
   end
   
   describe "route recognition" do
@@ -160,32 +160,32 @@ describe UsersController do
     end
   end
   
-  describe "named routing" do
-    before(:each) do
-      get :new
-    end
-    
-    it "should route users_path() to /users" do
-      users_path().should == "/users"
-      formatted_users_path(:format => 'xml').should == "/users.xml"
-      formatted_users_path(:format => 'json').should == "/users.json"
-    end
-    
-    it "should route new_user_path() to /users/new" do
-      new_user_path().should == "/users/new"
-      formatted_new_user_path(:format => 'xml').should == "/users/new.xml"
-      formatted_new_user_path(:format => 'json').should == "/users/new.json"
-    end
-    
-    it "should route user_(:id => '1') to /users/1" do
-      user_path(:id => '1').should == "/users/1"
-      formatted_user_path(:id => '1', :format => 'xml').should == "/users/1.xml"
-      formatted_user_path(:id => '1', :format => 'json').should == "/users/1.json"
-    end
-    
-    it "should route edit_user_path(:id => '1') to /users/1/edit" do
-      edit_user_path(:id => '1').should == "/users/1/edit"
-    end
-  end
+#  describe "named routing" do
+#    before(:each) do
+#      get :new
+#    end
+#    
+#    it "should route users_path() to /users" do
+#      users_path().should == "/users"
+#      formatted_users_path(:format => 'xml').should == "/users.xml"
+#      formatted_users_path(:format => 'json').should == "/users.json"
+#    end
+#    
+#    it "should route new_user_path() to /users/new" do
+#      new_user_path().should == "/users/new"
+#      formatted_new_user_path(:format => 'xml').should == "/users/new.xml"
+#      formatted_new_user_path(:format => 'json').should == "/users/new.json"
+#    end
+#    
+#    it "should route user_(:id => '1') to /users/1" do
+#      user_path(:id => '1').should == "/users/1"
+#      formatted_user_path(:id => '1', :format => 'xml').should == "/users/1.xml"
+#      formatted_user_path(:id => '1', :format => 'json').should == "/users/1.json"
+#    end
+#    
+#    it "should route edit_user_path(:id => '1') to /users/1/edit" do
+#      edit_user_path(:id => '1').should == "/users/1/edit"
+#    end
+#  end
   
 end
