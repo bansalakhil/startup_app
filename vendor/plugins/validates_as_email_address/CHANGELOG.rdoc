@@ -1,0 +1,36 @@
+== master
+
+== 0.2.2 / 2009-03-15
+
+* Add support for Rails 2.2 i18n error messages [Saimon Moore]
+
+== 0.2.1 / 2009-01-11
+
+* Ensure correct encoding for regular expressions to be compatible with Ruby 1.9+
+
+== 0.2.0 / 2008-12-14
+
+* Remove the PluginAWeek namespace
+
+== 0.1.1 / 2008-10-25
+
+* Fix major performance hit on long domains when in strict mode
+* Fix single-character/digit domains not being allowed in strict mode
+
+== 0.1.0 / 2008-09-07
+
+* Allow all options to be passed to format/length validations so that future options can be defined without changing this plugin
+* Add support for overriding length limits
+* Add support for requiring that domains follow the RFC 1035 format (on by default) [Kacper Bielecki]
+
+== 0.0.3 / 2008-06-22
+
+* Remove log files from gems
+
+== 0.0.2 / 2008-05-05
+
+* Update documentation
+
+== 0.0.1 / 2007-09-26
+
+* Add documentation

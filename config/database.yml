@@ -34,8 +34,8 @@ test:
   database: startup_app_test
   pool: 5
   username: root
-  password:
-  socket: /var/run/mysqld/mysqld.sock
+  password: root
+
 
 production:
   adapter: mysql

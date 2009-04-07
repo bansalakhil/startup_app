@@ -8,11 +8,7 @@
 #  created_at :datetime
 #  updated_at :datetime
 
-require 'test_helper'
-
-class RoleTest < ActiveSupport::TestCase
-  # Replace this with your real tests.
-  test "the truth" do
-    assert true
-  end
-end
+admin:
+  name: admin
+user:
+  name: user  

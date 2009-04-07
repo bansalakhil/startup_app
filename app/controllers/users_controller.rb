@@ -11,7 +11,7 @@ class UsersController < ApplicationController
   def create
     logout_keeping_session!
     @user = User.new(params[:user])
-    @user.roles<<Role.find_by_name
+    @user.roles<< Role.user
     success = @user && @user.save
     if success && @user.errors.empty?
       redirect_back_or_default('/')
@@ -69,7 +69,6 @@ class UsersController < ApplicationController
       
       if  Time.now <= @user.forgot_password_token_expires_at
         respond_to do |format|
-
           if @user.update_attributes(params[:user])
             flash[:notice] = 'Password was successfully updated.'
             @user.reset_forgot_password_fields
