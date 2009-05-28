@@ -25,7 +25,6 @@ namespace :data do
       puts "Errors below:"
       puts @user.errors.full_messages
       puts @user.inspect
-      debugger
     end
   end
 
